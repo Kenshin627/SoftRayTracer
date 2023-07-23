@@ -10,7 +10,7 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 	glm::vec3 oc = ray.Origin() - center;
 	float a = glm::dot(ray.Direction(), ray.Direction());
 	float b = 2 * glm::dot(ray.Direction(), oc);
-	float half_b = b * 0.5;
+	float half_b = b * 0.5f;
 	float c = glm::dot(oc, oc) - radius * radius;
 	float discriminant = half_b * half_b - a * c;
 	if (discriminant < 0)
@@ -31,4 +31,5 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 	rec.t = root;
 	glm::vec3 out_normal = glm::normalize(rec.point - center);
 	rec.SetNormal(ray, out_normal);
+	return true;
 }
