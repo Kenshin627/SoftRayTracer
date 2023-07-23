@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "../Renderer/RayTracer.h"
 #include <iostream>
 
 Window::Window(const char* title, uint32_t width, uint32_t height)
@@ -34,7 +35,7 @@ void Window::Run()
 			//clear
 			Clear();
 			//draw
-
+			rayTracer->Draw();
 			//present
 			SDL_RenderPresent(drawHandle);
 		}
@@ -45,6 +46,13 @@ void Window::Run()
 
 	}
 }
+
+void Window::DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color)
+{
+	SDL_SetRenderDrawColor(drawHandle, color.r, color.g, color.b, 255);
+	SDL_RenderDrawPoint(drawHandle, x, y);
+}
+
 void Window::Clear()
 {
 	SDL_SetRenderDrawColor(drawHandle, clearColor.r, clearColor.g, clearColor.b, 255);

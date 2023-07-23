@@ -5,6 +5,7 @@
 class Camera
 {
 public:
+	Camera() = default;
 	Camera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up, float focalLength, float aspect, float height);
 	Ray EmitRay(float u, float v);
 private:
@@ -13,4 +14,5 @@ private:
 	glm::vec3 x;
 	float focalLength;
 	glm::vec3 position;
+	glm::vec3 viewportOrigin;
 };
