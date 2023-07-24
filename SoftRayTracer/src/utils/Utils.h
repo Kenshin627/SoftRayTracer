@@ -38,4 +38,13 @@ public:
 	{
 		return glm::dot(-in, n) * n * 2.0f + in;
 	}
+
+	static glm::vec3 Reflact(const glm::vec3& in, const glm::vec3& n, float ior)
+	{
+		float cosTheta = glm::min(glm::dot(-in, n), 1.0f);
+		glm::vec3 outPerp = ior * (in + cosTheta * n);
+		float perpLen = glm::length(outPerp);
+		glm::vec3 parallel = -glm::sqrt(std::fabs(1.0f - perpLen * perpLen)) * n;
+		return outPerp + parallel;
+	}
 };

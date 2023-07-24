@@ -2,12 +2,12 @@
 #include "Material.h"
 #include "../Model/Hittable.h"
 
-class MetalMaterial :public Material
+class Dielectric :public Material
 {
 public:
-	MetalMaterial(const glm::vec3& color, float roughness);
+	Dielectric(float ior) :ior(ior) {}
 	virtual bool Scatter(const Ray& in, const HitRecord& rec, glm::vec3& attenuation, Ray& scatter) override;
+	float SchlickFernelApprox(float cosTheta, float refractionRatio);
 private:
-	glm::vec3 albedo;
-	float roughness; //[0, 1]
+	float ior;
 };
