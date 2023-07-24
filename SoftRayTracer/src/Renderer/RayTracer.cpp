@@ -39,8 +39,13 @@ glm::vec3 RayTracer::RayColor(const Ray& ray, uint32_t depth)
 	}
 	if (world.Hit(ray, 0.001f, std::numeric_limits<float>::max(), record))
 	{
-		glm::vec3 target = record.point + record.normal + Tool::RandomInUnitSphere();
-		return 0.5f * RayColor(Ray(record.point, target - record.point), depth - 1);
+		Ray scatter;
+		glm::vec3 attenuation;
+		if (record.material->Scatter(ray, record, attenuation, scatter))
+		{
+			glm::vec3 target = record.point + record.normal + Tool::RandomInUnitSphere();
+			return attenuation * RayColor(scatter, depth - 1);
+		} 		
 	}
 	//remap [-1, 1] -> [0, 1]
 	float t = (glm::normalize(ray.Direction()).y + 1.0f) * 0.5f;

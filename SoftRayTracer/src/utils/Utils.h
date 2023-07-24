@@ -34,8 +34,8 @@ public:
 		return glm::abs(v.x) < 1e-8 && glm::abs(v.y) < 1e-8 && glm::abs(v.z) < 1e-8;
 	}
 
-	static glm::vec3 Reflect()
+	static glm::vec3 Reflect(const glm::vec3& in, const glm::vec3& n)
 	{
-		
+		return glm::dot(-in, n) * n * 2.0f + in;
 	}
 };

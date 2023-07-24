@@ -1,5 +1,6 @@
 #pragma once
 #include "Material.h"
+#include "../Model/Hittable.h"
 
 class DiffuseMaterial :public Material
 {

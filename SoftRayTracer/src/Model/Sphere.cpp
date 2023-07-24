@@ -1,6 +1,6 @@
 #include "Sphere.h"
 
-Sphere::Sphere(const glm::vec3& center, float radius) :center(center), radius(radius) {}
+Sphere::Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& mat) :Hittable(mat), center(center), radius(radius) {}
 
 //(p-c)(p-c) = r^2
 //(ray.Origin() + t * ray.Direction() - center) * (ray.Origin() + t * ray.Direction() - center) - r^2 = 0
@@ -29,6 +29,7 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 	}
 	rec.point = ray.At(root);
 	rec.t = root;
+	rec.material = material;
 	glm::vec3 out_normal = glm::normalize(rec.point - center);
 	rec.SetNormal(ray, out_normal);
 	return true;

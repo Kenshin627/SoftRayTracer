@@ -1,5 +1,7 @@
 #pragma once
 #include "../Renderer/Ray.h"
+#include "../Material/Material.h"
+#include <memory>
 
 struct HitRecord
 {
@@ -7,6 +9,7 @@ struct HitRecord
 	glm::vec3 normal;
 	float t;
 	bool frontFace;
+	std::shared_ptr<Material> material;
 	void SetNormal(const Ray& ray, const glm::vec3& out_Normal)
 	{
 		if (glm::dot(ray.Direction(), out_Normal) < 0)
@@ -26,6 +29,9 @@ class Hittable
 {
 public:
 	Hittable() = default;
+	Hittable(const std::shared_ptr<Material>& mat) :material(mat) {}
 	virtual ~Hittable() = default;
 	virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) = 0;
+protected:
+	std::shared_ptr<Material> material;
 };

@@ -12,4 +12,5 @@ bool DiffuseMaterial::Scatter(const Ray& in, const HitRecord& rec, glm::vec3& at
 		reflectDir = rec.normal;
 	}
 	scatter = Ray(rec.point, reflectDir);
+	return true;
 }
