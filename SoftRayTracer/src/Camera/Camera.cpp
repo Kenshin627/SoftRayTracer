@@ -1,14 +1,24 @@
 #include "Camera.h"
+#include "../utils/Utils.h"
 
-Camera::Camera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up, float focalLength, float aspect, float height):focalLength(focalLength), position(eye)
+Camera::Camera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& up, float aspect, float fovInRadian, float aperture): position(eye), fov(fovInRadian), apertureRadius(aperture / 2.0f)
 {
+	focalDistance = glm::length(center - eye);
+	float h = glm::tan(fovInRadian / 2.0f) * focalDistance;
+	float height = h * 2.0f;
+	float width = aspect * height;
 	z = glm::normalize(eye - center);
-	x = glm::normalize(glm::cross(up, z)) * aspect * height;
-	y = glm::normalize(glm::cross(z,  x)) * height;
-	viewportOrigin = -z * focalLength - x * 0.5f - y * 0.5f;
+	x = glm::normalize(glm::cross(up, z));
+	y = glm::normalize(glm::cross(z, x));
+	horizontal = x * width;
+	vertical = y * height;
+	viewportOrigin = eye - z * focalDistance - horizontal * 0.5f - vertical * 0.5f; //leftbottom
 }
 
 Ray Camera::EmitRay(float u, float v)
 {
-	return Ray(position, glm::normalize(viewportOrigin + u * x + v * y - position));
+	glm::vec3 offset = apertureRadius * Tool::RandomInUnitCircle();
+
+	glm::vec3 origin = position + x * offset.x + y * offset.y;
+	return Ray(origin, viewportOrigin + u * horizontal + v * vertical - origin);
 }

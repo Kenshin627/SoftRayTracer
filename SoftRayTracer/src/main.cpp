@@ -10,23 +10,27 @@ constexpr uint32_t height = 768;
 constexpr float aspect = 16.0f / 9.0f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-
+constexpr uint32_t samplerPerPixel = 100;
+constexpr float PI = 3.14159265358979f;
 
 HittableList RandomScene();
 int main(int argc, char** argv)
 {	
 	Window window{ "SoftRenderer", width, height };
-	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, 50, &window);
+	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, samplerPerPixel, &window);
 
-	/*auto diffuseMat = std::make_shared<DiffuseMaterial>(glm::vec3(0.2f, 0.8f, 0.1f));
-	auto groundMat = std::make_shared<DiffuseMaterial>(glm::vec3(0.2f, 0.2f, 0.2f));
-	auto metalMat = std::make_shared<MetalMaterial>(glm::vec3(0.8f, 0.1f, 0.2f), 0.5f);
-	HittableList world;
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 0, -1), 0.5f, diffuseMat));
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(1, 0, -1), 0.5f, metalMat));
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 100.5, -1), 100, groundMat));*/
+	//auto diffuseMat = std::make_shared<Lambertian>(glm::vec3(0.2f, 0.8f, 0.1f));
+	//auto groundMat = std::make_shared<Lambertian>(glm::vec3(0.2f, 0.2f, 0.2f));
+	//auto metalMat = std::make_shared<Metal>(glm::vec3(0.8f, 0.1f, 0.2f), 0.0f);
+ //   auto diedect = std::make_shared<Dielectric>(1.5f);
+	//HittableList world;
+	//world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 0, -1), 0.5f, diffuseMat));
+	//world.AddObject(std::make_shared<Sphere>(glm::vec3(1, 0, -1), 0.5f, metalMat));
+	//world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 100.5, -1), 100, groundMat));
+ //   world.AddObject(std::make_shared<Sphere>(glm::vec3(-1, 0, -1), 0.3f, diedect));
+ //   world.AddObject(std::make_shared<Sphere>(glm::vec3(-1, 0, -1), -0.2f, diedect));
     HittableList world = RandomScene();
-	Camera cam = Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0), 1.0f, aspect, 2.0f);
+    Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, PI / 2.0f, 0.1f);
 	rt->SetCamera(cam);
 	rt->SetWorld(world);
 	window.SetRayTracer(rt);
@@ -37,7 +41,7 @@ int main(int argc, char** argv)
 HittableList RandomScene()
 {
     HittableList world;
-    auto ground_material = std::make_shared<Lambertian>(glm::vec3(0.5, 0.5, 0.5));
+    auto ground_material = std::make_shared<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f));
     world.AddObject(std::make_shared<Sphere>(glm::vec3(0, -1000, 0), 1000, ground_material));
 
     for (int a = -11; a < 11; a++) {
