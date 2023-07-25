@@ -46,6 +46,9 @@ glm::vec3 RayTracer::RayColor(const Ray& ray, uint32_t depth)
 			glm::vec3 target = record.point + record.normal + Tool::RandomInUnitSphere();
 			return attenuation * RayColor(scatter, depth - 1);
 		} 		
+		else {
+			return { 0, 0, 0 };
+		}
 	}
 	//remap [-1, 1] -> [0, 1]
 	float t = (glm::normalize(ray.Direction()).y + 1.0f) * 0.5f;

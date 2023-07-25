@@ -6,27 +6,20 @@
 #include "Material/Dielectric.h"
 #include "utils/Utils.h"
 
-constexpr uint32_t height = 768;
-constexpr float aspect = 16.0f / 9.0f;
+constexpr uint32_t height = 1080;
+constexpr float aspect = 1.7777777777f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-
+constexpr uint32_t samplerPerPixel = 100;
 
 HittableList RandomScene();
 int main(int argc, char** argv)
 {	
 	Window window{ "SoftRenderer", width, height };
-	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, 50, &window);
+	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, samplerPerPixel, &window);
 
-	/*auto diffuseMat = std::make_shared<DiffuseMaterial>(glm::vec3(0.2f, 0.8f, 0.1f));
-	auto groundMat = std::make_shared<DiffuseMaterial>(glm::vec3(0.2f, 0.2f, 0.2f));
-	auto metalMat = std::make_shared<MetalMaterial>(glm::vec3(0.8f, 0.1f, 0.2f), 0.5f);
-	HittableList world;
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 0, -1), 0.5f, diffuseMat));
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(1, 0, -1), 0.5f, metalMat));
-	world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 100.5, -1), 100, groundMat));*/
     HittableList world = RandomScene();
-	Camera cam = Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0), 1.0f, aspect, 2.0f);
+	Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f);
 	rt->SetCamera(cam);
 	rt->SetWorld(world);
 	window.SetRayTracer(rt);

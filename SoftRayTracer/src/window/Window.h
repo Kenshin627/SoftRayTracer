@@ -20,4 +20,5 @@ private:
 	bool shounldClosed = false;
 	glm::vec3 clearColor { 51, 51, 51 };
 	std::shared_ptr<RayTracer> rayTracer;
+	glm::mat3 transform;
 };

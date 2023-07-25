@@ -47,4 +47,16 @@ public:
 		glm::vec3 parallel = -glm::sqrt(std::fabs(1.0f - perpLen * perpLen)) * n;
 		return outPerp + parallel;
 	}
+
+	static glm::vec3 RandomInUnitDesk()
+	{
+		while (true)
+		{
+			glm::vec3 v = { Random(-1.0f, 1.0f), Random(-1.0f, 1.0f), 0.0f };
+			if (glm::length(v) <= 1)
+			{
+				return glm::normalize(v);
+			}
+		}
+	}
 };
