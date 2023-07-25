@@ -6,12 +6,11 @@
 #include "Material/Dielectric.h"
 #include "utils/Utils.h"
 
-constexpr uint32_t height = 768;
-constexpr float aspect = 16.0f / 9.0f;
+constexpr uint32_t height = 1000;
+constexpr float aspect = 3.0f / 2.0f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
 constexpr uint32_t samplerPerPixel = 100;
-constexpr float PI = 3.14159265358979f;
 
 HittableList RandomScene();
 int main(int argc, char** argv)
@@ -30,7 +29,7 @@ int main(int argc, char** argv)
  //   world.AddObject(std::make_shared<Sphere>(glm::vec3(-1, 0, -1), 0.3f, diedect));
  //   world.AddObject(std::make_shared<Sphere>(glm::vec3(-1, 0, -1), -0.2f, diedect));
     HittableList world = RandomScene();
-    Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, PI / 2.0f, 0.1f);
+    Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f);
 	rt->SetCamera(cam);
 	rt->SetWorld(world);
 	window.SetRayTracer(rt);
