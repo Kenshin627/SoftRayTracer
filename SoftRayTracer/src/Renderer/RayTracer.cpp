@@ -4,7 +4,7 @@
 
 RayTracer::RayTracer(uint32_t width, uint32_t height, uint32_t depth, uint32_t samplerPerPixel, Window* context) :width(width), height(height), depth(depth), samplerPerPixel(samplerPerPixel), drawHandle(context) {}
 
-void RayTracer::SetWorld(const HittableList& obj)
+void RayTracer::SetWorld(const std::shared_ptr<Hittable>& obj)
 {
 	world = obj;
 }
@@ -37,7 +37,7 @@ glm::vec3 RayTracer::RayColor(const Ray& ray, uint32_t depth)
 	{
 		return { 0, 0, 0 };
 	}
-	if (world.Hit(ray, 0.001f, std::numeric_limits<float>::max(), record))
+	if (world->Hit(ray, 0.001f, std::numeric_limits<float>::max(), record))
 	{
 		Ray scatter;
 		glm::vec3 attenuation;

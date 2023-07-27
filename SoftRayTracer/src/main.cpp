@@ -5,20 +5,21 @@
 #include "Material/Metal.h"
 #include "Material/Dielectric.h"
 #include "utils/Utils.h"
+#include "BVH/BvhNode.h"
 
 constexpr uint32_t height = 1080;
 constexpr float aspect = 1.7777777777f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-constexpr uint32_t samplerPerPixel = 100;
+constexpr uint32_t samplerPerPixel = 10;
 
-HittableList RandomScene();
+std::shared_ptr<Hittable> RandomScene();
 int main(int argc, char** argv)
 {	
 	Window window{ "SoftRenderer", width, height };
 	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, samplerPerPixel, &window);
 
-    HittableList world = RandomScene();
+    std::shared_ptr<Hittable> world = RandomScene();
 	Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f);
 	rt->SetCamera(cam);
 	rt->SetWorld(world);
@@ -27,7 +28,7 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-HittableList RandomScene()
+std::shared_ptr<Hittable> RandomScene()
 {
     HittableList world;
     auto ground_material = std::make_shared<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f));
@@ -72,5 +73,5 @@ HittableList RandomScene()
     auto material3 = std::make_shared<Metal>(glm::vec3(0.7, 0.6, 0.5), 0.0);
     world.AddObject(std::make_shared<Sphere>(glm::vec3(4, 1, 0), 1.0, material3));
 
-    return world;
+    return std::make_shared<BvhNode>(world);
 }

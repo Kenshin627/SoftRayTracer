@@ -1,6 +1,7 @@
 #pragma once
 #include "../Renderer/Ray.h"
 #include "../Material/Material.h"
+#include "../Renderer/BoundingBox.h"
 #include <memory>
 
 struct HitRecord
@@ -32,6 +33,7 @@ public:
 	Hittable(const std::shared_ptr<Material>& mat) :material(mat) {}
 	virtual ~Hittable() = default;
 	virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) = 0;
+	virtual bool GetBoundingBox(BoundingBox& out) = 0;
 protected:
 	std::shared_ptr<Material> material;
 };

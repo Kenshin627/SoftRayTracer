@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BVH\BvhNode.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material\Dielectric.cpp" />
@@ -163,11 +164,13 @@
     <ClCompile Include="src\Material\Metal.cpp" />
     <ClCompile Include="src\Model\HittableList.cpp" />
     <ClCompile Include="src\Model\Sphere.cpp" />
+    <ClCompile Include="src\Renderer\BoundingBox.cpp" />
     <ClCompile Include="src\Renderer\Ray.cpp" />
     <ClCompile Include="src\Renderer\RayTracer.cpp" />
     <ClCompile Include="src\window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BVH\BvhNode.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Material\Dielectric.h" />
     <ClInclude Include="src\Material\Lambertian.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="src\Model\HittableList.h" />
     <ClInclude Include="src\Model\Sphere.h" />
     <ClInclude Include="src\Model\Hittable.h" />
+    <ClInclude Include="src\Renderer\BoundingBox.h" />
     <ClInclude Include="src\Renderer\Ray.h" />
     <ClInclude Include="src\Renderer\RayTracer.h" />
     <ClInclude Include="src\utils\Utils.h" />

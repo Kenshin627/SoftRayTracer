@@ -34,3 +34,10 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 	rec.SetNormal(ray, out_normal);
 	return true;
 }
+bool Sphere::GetBoundingBox(BoundingBox& out)
+{
+	glm::vec3 min { -radius, -radius, -radius };
+	glm::vec3 max {  radius,  radius,  radius };
+	out = BoundingBox(center + min, center + max);
+	return true;
+}

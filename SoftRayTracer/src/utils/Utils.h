@@ -71,4 +71,9 @@ public:
 			}
 		}
 	}
+
+	static int RandomInt(int min, int max)
+	{
+		return static_cast<int>(Random(min, max + 1));
+	}
 };

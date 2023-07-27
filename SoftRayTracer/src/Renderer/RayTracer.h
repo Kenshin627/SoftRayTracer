@@ -10,7 +10,7 @@ class RayTracer
 public:
 	RayTracer(uint32_t width, uint32_t height, uint32_t depth, uint32_t samplerPerPixel, Window* context);
 	void SetCamera(const Camera& c) { camera = c; }
-	void SetWorld(const HittableList& obj);
+	void SetWorld(const std::shared_ptr<Hittable>& obj);
 	void Draw();
 	glm::vec3 RayColor(const Ray& ray, uint32_t depth);
 	void DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color);
@@ -18,7 +18,7 @@ public:
 	void GammaCorrect(glm::vec3& color);
 private:
 	Camera camera;
-	HittableList world;
+	std::shared_ptr<Hittable> world;
 	uint32_t width;
 	uint32_t height;
 	uint32_t depth;
