@@ -20,7 +20,7 @@ void RayTracer::Draw()
 			{
 				float u = ((float)x + Tool::Random(0.0f, 1.0f)) / (width - 1.0f);
 				float v = ((float)y + Tool::Random(0.0f, 1.0f)) / (height - 1.0f);
-				Ray ray = camera.EmitRay(u, v);
+				Ray ray = camera->EmitRay(u, v);
 				color += RayColor(ray, depth);
 			}
 			GammaCorrect(color);

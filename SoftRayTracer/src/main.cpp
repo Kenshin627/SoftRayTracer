@@ -10,12 +10,15 @@
 #include "Model/XYPlane.h"
 #include "Model/YZPlane.h"
 #include "Model/XZPlane.h"
+#include "Model/Translation.h"
+#include "Model/RotationY.h"
+#include "Model/Box.h"
 
-constexpr uint32_t height = 600;
-constexpr float aspect = 1.0f;
+constexpr uint32_t height = 800;
+constexpr float aspect = 16.0f / 9.0f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-constexpr uint32_t samplerPerPixel = 50;
+constexpr uint32_t samplerPerPixel = 200;
 
 std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt);
 std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt);
@@ -32,7 +35,7 @@ int main(int argc, char** argv)
 
 std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt)
 {
-    Camera cam = Camera(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f, 10.0f);
+    std::shared_ptr<Camera> cam = std::make_shared<Camera>(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f, 10.0f);
     rt->SetCamera(cam);
     rt->SetBackGround({ 1.0f, 1.0f, 1.0f });
     HittableList world;
@@ -83,7 +86,7 @@ std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt)
 
 std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt)
 {
-    Camera cam = Camera(glm::vec3(278, 278, -800), glm::vec3(278, 278, 0), glm::vec3(0, 1, 0), aspect, 40.0f, 0.0f, 10.0f);
+    std::shared_ptr<Camera> cam = std::make_shared<Camera>(glm::vec3(278, 278, -800), glm::vec3(278, 278, 0), glm::vec3(0, 1, 0), aspect, 40.0f, 0.0f, 10.0f);
     rt->SetCamera(cam);
     rt->SetBackGround({ 0.0f, 0.0f, 0.0f });
     HittableList world;
@@ -99,15 +102,15 @@ std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt)
     world.AddObject(std::make_shared<XZPlane>(0, 555, 0, 555, 0, white));
     world.AddObject(std::make_shared<XYPlane>(0, 555, 0, 555, 555, white));
 
-    //shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
-    //box1 = make_shared<rotate_y>(box1, 15);
-    //box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    //objects.add(box1);
+    std::shared_ptr<Hittable> box1 = std::make_shared<Box>(glm::vec3(82.5f, 165.0f, 82.5f), 165, 330, 165, white);
+    box1 = std::make_shared<RotationY>(box1, 15);
+    box1 = std::make_shared<Translation>(box1, glm::vec3(265, 0, 295));
+    world.AddObject(box1);
 
-    //shared_ptr<hittable> box2 = make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-    //box2 = make_shared<rotate_y>(box2, -18);
-    //box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    //objects.add(box2);
+    std::shared_ptr<Hittable> box2 = std::make_shared<Box>(glm::vec3(82.5f, 82.5f, 82.5f), 165, 165, 165, white);
+    box2 = std::make_shared<RotationY>(box2, -18);
+    box2 = std::make_shared<Translation>(box2, glm::vec3(130, 0, 65));
+    world.AddObject(box2);
     auto bvhNode = std::make_shared<BvhNode>(world);
     rt->SetWorld(bvhNode);
     return bvhNode;

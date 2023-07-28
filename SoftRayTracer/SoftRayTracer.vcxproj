@@ -165,7 +165,9 @@
     <ClCompile Include="src\Material\Metal.cpp" />
     <ClCompile Include="src\Model\Box.cpp" />
     <ClCompile Include="src\Model\HittableList.cpp" />
+    <ClCompile Include="src\Model\RotationY.cpp" />
     <ClCompile Include="src\Model\Sphere.cpp" />
+    <ClCompile Include="src\Model\Translation.cpp" />
     <ClCompile Include="src\Model\XYPlane.cpp" />
     <ClCompile Include="src\Model\XZPlane.cpp" />
     <ClCompile Include="src\Model\YZPlane.cpp" />
@@ -184,8 +186,10 @@
     <ClInclude Include="src\Material\Metal.h" />
     <ClInclude Include="src\Model\Box.h" />
     <ClInclude Include="src\Model\HittableList.h" />
+    <ClInclude Include="src\Model\RotationY.h" />
     <ClInclude Include="src\Model\Sphere.h" />
     <ClInclude Include="src\Model\Hittable.h" />
+    <ClInclude Include="src\Model\Translation.h" />
     <ClInclude Include="src\Model\XYPlane.h" />
     <ClInclude Include="src\Model\XZPlane.h" />
     <ClInclude Include="src\Model\YZPlane.h" />
