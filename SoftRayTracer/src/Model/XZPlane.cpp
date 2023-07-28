@@ -1,9 +1,6 @@
 #include "XZPlane.h"
 
-XZPlane::XZPlane(float x0, float x1, float z0, float z1, float y, const std::shared_ptr<Material>& mat) :Hittable(mat), xMin(x0), zMin(z0), xMax(x1), zMax(z1), y(y)
-{
-
-}
+XZPlane::XZPlane(float x0, float x1, float z0, float z1, float y, const std::shared_ptr<Material>& mat) :Hittable(mat), xMin(x0), zMin(z0), xMax(x1), zMax(z1), y(y) {}
 
 bool XZPlane::GetBoundingBox(BoundingBox& out)
 {

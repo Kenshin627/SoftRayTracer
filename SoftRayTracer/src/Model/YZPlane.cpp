@@ -1,9 +1,6 @@
 #include "YZPlane.h"
 
-YZPlane::YZPlane(float y0, float y1, float z0, float z1, float x, const std::shared_ptr<Material>& mat) :Hittable(mat), yMin(y0), zMin(z0), yMax(y1), zMax(z1), x(x)
-{
-
-}
+YZPlane::YZPlane(float y0, float y1, float z0, float z1, float x, const std::shared_ptr<Material>& mat) :Hittable(mat), yMin(y0), zMin(z0), yMax(y1), zMax(z1), x(x) {}
 
 bool YZPlane::GetBoundingBox(BoundingBox& out)
 {

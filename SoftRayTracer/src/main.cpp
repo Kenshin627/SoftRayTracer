@@ -15,7 +15,7 @@ constexpr uint32_t height = 600;
 constexpr float aspect = 1.0f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-constexpr uint32_t samplerPerPixel = 200;
+constexpr uint32_t samplerPerPixel = 50;
 
 std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt);
 std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt);
@@ -110,5 +110,5 @@ std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt)
     //objects.add(box2);
     auto bvhNode = std::make_shared<BvhNode>(world);
     rt->SetWorld(bvhNode);
-    return std::make_shared<HittableList>(world);
+    return bvhNode;
 }

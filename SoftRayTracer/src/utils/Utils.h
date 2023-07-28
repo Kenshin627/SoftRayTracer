@@ -5,11 +5,14 @@
 class Tool
 {
 public:
+	static float Random()
+	{
+		return rand() / (RAND_MAX + 1.0);
+	}
+
 	static float Random(float min, float max)
 	{
-		static std::uniform_real_distribution<float> distribution(min, max);
-		static std::mt19937 generator;
-		return distribution(generator);
+		return min + (max - min) * Random();
 	}
 
 	static glm::vec3 RandomVector(float min, float max)

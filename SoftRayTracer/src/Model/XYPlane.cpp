@@ -1,9 +1,6 @@
 #include "XYPlane.h"
 
-XYPlane::XYPlane(float x0, float x1, float y0, float y1, float z, const std::shared_ptr<Material>& mat):Hittable(mat), xMin(x0), yMin(y0), xMax(x1), yMax(y1), z(z)
-{
-	
-}
+XYPlane::XYPlane(float x0, float x1, float y0, float y1, float z, const std::shared_ptr<Material>& mat) :Hittable(mat), xMin(x0), yMin(y0), xMax(x1), yMax(y1), z(z) {}
 
 bool XYPlane::GetBoundingBox(BoundingBox& out)
 {

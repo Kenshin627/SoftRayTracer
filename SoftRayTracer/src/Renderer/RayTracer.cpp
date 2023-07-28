@@ -38,7 +38,7 @@ glm::vec3 RayTracer::RayColor(const Ray& ray, uint32_t depth)
 		return { 0, 0, 0 };
 	}
 
-	if (!world->Hit(ray, 0.0001f, std::numeric_limits<float>::infinity(), record))
+	if (!world->Hit(ray, 0.00001f, std::numeric_limits<float>::infinity(), record))
 	{
 		//remap [-1, 1] -> [0, 1]
 		//float t = (glm::normalize(ray.Direction()).y + 1.0f) * 0.5f;

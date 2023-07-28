@@ -35,7 +35,7 @@ bool HittableList::GetBoundingBox(BoundingBox& out)
 		}
 		else 
 		{
-			out = firstObject ? bbox : BoundingBox(bbox, out);
+			out = firstObject ? bbox : BoundingBox::SurroundingBox(bbox, out);
 		}
 		firstObject = false;
 	}
