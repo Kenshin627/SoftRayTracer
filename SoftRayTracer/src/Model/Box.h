@@ -11,6 +11,6 @@ public:
 	virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) override;
 	virtual bool GetBoundingBox(BoundingBox& out) override;
 private:
-	HittableList planes;
+	HittableList faces;
 	BoundingBox aabb;
 };
