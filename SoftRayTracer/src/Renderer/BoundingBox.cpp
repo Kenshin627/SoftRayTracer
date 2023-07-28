@@ -50,16 +50,34 @@ BoundingBox BoundingBox::SurroundingBox(const BoundingBox& box1, const BoundingB
 
 bool BoundingBox::Hit(const Ray& r, float minTime, float maxTime)
 {
-	for (int a = 0; a < 3; a++) {
-		auto t0 = fmin((min[a] - r.Origin()[a]) / r.Direction()[a],
-			(max[a] - r.Origin()[a]) / r.Direction()[a]);
-		auto t1 = fmax((min[a] - r.Origin()[a]) / r.Direction()[a],
-			(max[a] - r.Origin()[a]) / r.Direction()[a]);
-		minTime = fmax(t0, minTime);
-		maxTime = fmin(t1, maxTime);
-		if (maxTime <= minTime)
+	//for (int a = 0; a < 3; a++) {
+		auto tx0 = fmin((min.x - r.Origin().x) / r.Direction().x,
+			(max.x - r.Origin().x) / r.Direction().x);
+		auto tx1 = fmax((min.x - r.Origin().x) / r.Direction().x,
+			(max.x - r.Origin().x) / r.Direction().x);
+		minTime = fmax(tx0, minTime);
+		maxTime = fmin(tx1, maxTime);
+		if (maxTime < minTime)
+		return false;
+
+		auto ty0 = fmin((min.y - r.Origin().y) / r.Direction().y,
+			(max.y - r.Origin().y) / r.Direction().y);
+		auto ty1 = fmax((min.y - r.Origin().y) / r.Direction().y,
+			(max.y - r.Origin().y) / r.Direction().y);
+		minTime = fmax(ty0, minTime);
+		maxTime = fmin(ty1, maxTime);
+		if (maxTime < minTime)
 			return false;
-	}
+
+		auto tz0 = fmin((min.z - r.Origin().z) / r.Direction().z,
+			(max.z - r.Origin().z) / r.Direction().z);
+		auto tz1 = fmax((min.z - r.Origin().z) / r.Direction().z,
+			(max.z - r.Origin().z) / r.Direction().z);
+		minTime = fmax(tz0, minTime);
+		maxTime = fmin(tz1, maxTime);
+		if (maxTime < minTime)
+			return false;
+	//}
 	return true;
 }
 

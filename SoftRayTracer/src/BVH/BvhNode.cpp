@@ -34,7 +34,7 @@ BvhNode::BvhNode(const std::vector<std::shared_ptr<Hittable>>& objects, uint32_t
 {
 	auto objs = objects;
 	uint32_t span = end - start;
-	int axis = Tool::RandomInt(0, 3);
+	int axis = Tool::RandomInt(0, 2);
 	auto comparator = axis == 0 ? CompareX :
 					  axis == 1 ? CompareY :
 					              CompareZ;

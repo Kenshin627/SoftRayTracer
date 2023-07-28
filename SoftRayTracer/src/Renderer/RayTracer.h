@@ -14,7 +14,8 @@ public:
 	void Draw();
 	glm::vec3 RayColor(const Ray& ray, uint32_t depth);
 	void DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color);
-	glm::vec3 BackGround(float t);
+	const glm::vec3& BackGround() const ;
+	void SetBackGround(const glm::vec3& background);
 	void GammaCorrect(glm::vec3& color);
 private:
 	Camera camera;
@@ -24,4 +25,5 @@ private:
 	uint32_t depth;
 	uint32_t samplerPerPixel;
 	Window* drawHandle;
+	glm::vec3 background;
 };

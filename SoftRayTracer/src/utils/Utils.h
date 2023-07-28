@@ -31,7 +31,8 @@ public:
 
 	static bool NearZero(const glm::vec3& v)
 	{
-		return glm::abs(v.x) < 1e-8 && glm::abs(v.y) < 1e-8 && glm::abs(v.z) < 1e-8;
+		const auto epsilon = 1e-8;
+		return (std::fabs(v.x) < epsilon) && (std::fabs(v.y) < epsilon) && (fabs(v.z) < epsilon);
 	}
 
 	static glm::vec3 Reflect(const glm::vec3& in, const glm::vec3& n)

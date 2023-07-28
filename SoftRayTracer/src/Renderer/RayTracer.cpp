@@ -37,27 +37,27 @@ glm::vec3 RayTracer::RayColor(const Ray& ray, uint32_t depth)
 	{
 		return { 0, 0, 0 };
 	}
-	if (world->Hit(ray, 0.001f, std::numeric_limits<float>::max(), record))
+
+	if (!world->Hit(ray, 0.0001f, std::numeric_limits<float>::infinity(), record))
 	{
-		Ray scatter;
-		glm::vec3 attenuation;
-		if (record.material->Scatter(ray, record, attenuation, scatter))
-		{
-			return attenuation * RayColor(scatter, depth - 1);
-		}
-		else
-		{
-			return { 0, 0, 0 };
-		}
+		//remap [-1, 1] -> [0, 1]
+		//float t = (glm::normalize(ray.Direction()).y + 1.0f) * 0.5f;
+		return BackGround();
 	}
-	//remap [-1, 1] -> [0, 1]
-	float t = (glm::normalize(ray.Direction()).y + 1.0f) * 0.5f;
-	return BackGround(t);
+	
+	Ray scatter;
+	glm::vec3 attenuation;
+	glm::vec3 emitColor = record.material->Emitter(0, 0, { 0, 0, 0 });
+	if (!record.material->Scatter(ray, record, attenuation, scatter))
+	{
+		return emitColor;
+	}
+	return emitColor + attenuation * RayColor(scatter, depth - 1);
 }
 
-glm::vec3 RayTracer::BackGround(float t)
+const glm::vec3& RayTracer::BackGround() const
 {
-	return glm::vec3(1.0) * t + (1.0f - t) * glm::vec3(0.3f, 0.5f, 1.0f);
+	return background;
 }
 
 
@@ -70,7 +70,23 @@ void RayTracer::DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color)
 void RayTracer::GammaCorrect(glm::vec3& color)
 {
 	float gamma = 1.0f / 2.0f;
-	color.r = glm::pow(color.r / (float)samplerPerPixel, gamma);
-	color.g = glm::pow(color.g / (float)samplerPerPixel, gamma);
-	color.b = glm::pow(color.b / (float)samplerPerPixel, gamma);
+	if (color.r != color.r)
+	{
+		color.r = 0.0f;
+	}if (color.g != color.g)
+	{
+		color.g = 0.0f;
+	}
+	if (color.b != color.b)
+	{
+		color.b = 0.0f;
+	}
+	color.r = glm::clamp(glm::pow(color.r / (float)samplerPerPixel, gamma), 0.0f, 1.0f);
+	color.g = glm::clamp(glm::pow(color.g / (float)samplerPerPixel, gamma), 0.0f, 1.0f);
+	color.b = glm::clamp(glm::pow(color.b / (float)samplerPerPixel, gamma), 0.0f, 1.0f);
+}
+
+void RayTracer::SetBackGround(const glm::vec3& color)
+{
+	background = color;
 }
