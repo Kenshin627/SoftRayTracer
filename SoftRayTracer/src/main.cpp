@@ -13,12 +13,13 @@
 #include "Model/Translation.h"
 #include "Model/RotationY.h"
 #include "Model/Box.h"
+#include "Model/ConstantMedium.h"
 
-constexpr uint32_t height = 800;
-constexpr float aspect = 16.0f / 9.0f;
+constexpr uint32_t height = 600;
+constexpr float aspect = 1.0f;
 constexpr uint32_t width = aspect * height;
 constexpr uint32_t depth = 50;
-constexpr uint32_t samplerPerPixel = 200;
+constexpr uint32_t samplerPerPixel = 50;
 
 std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt);
 std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt);
@@ -105,12 +106,12 @@ std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt)
     std::shared_ptr<Hittable> box1 = std::make_shared<Box>(glm::vec3(82.5f, 165.0f, 82.5f), 165, 330, 165, white);
     box1 = std::make_shared<RotationY>(box1, 15);
     box1 = std::make_shared<Translation>(box1, glm::vec3(265, 0, 295));
-    world.AddObject(box1);
+    world.AddObject(std::make_shared<ConstantMedium>(box1, 0.01f, glm::vec3(0.0f, 0.0f, 0.0f)));
 
     std::shared_ptr<Hittable> box2 = std::make_shared<Box>(glm::vec3(82.5f, 82.5f, 82.5f), 165, 165, 165, white);
     box2 = std::make_shared<RotationY>(box2, -18);
     box2 = std::make_shared<Translation>(box2, glm::vec3(130, 0, 65));
-    world.AddObject(box2);
+    world.AddObject(std::make_shared<ConstantMedium>(box2, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f)));
     auto bvhNode = std::make_shared<BvhNode>(world);
     rt->SetWorld(bvhNode);
     return bvhNode;

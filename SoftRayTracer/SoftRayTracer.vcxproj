@@ -160,10 +160,12 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material\Dielectric.cpp" />
     <ClCompile Include="src\Material\DiffuseLight.cpp" />
+    <ClCompile Include="src\Material\IsoTropic.cpp" />
     <ClCompile Include="src\Material\Lambertian.cpp" />
     <ClCompile Include="src\Material\Material.cpp" />
     <ClCompile Include="src\Material\Metal.cpp" />
     <ClCompile Include="src\Model\Box.cpp" />
+    <ClCompile Include="src\Model\ConstantMedium.cpp" />
     <ClCompile Include="src\Model\HittableList.cpp" />
     <ClCompile Include="src\Model\RotationY.cpp" />
     <ClCompile Include="src\Model\Sphere.cpp" />
@@ -181,10 +183,12 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Material\Dielectric.h" />
     <ClInclude Include="src\Material\DiffuseLight.h" />
+    <ClInclude Include="src\Material\IsoTropic.h" />
     <ClInclude Include="src\Material\Lambertian.h" />
     <ClInclude Include="src\Material\Material.h" />
     <ClInclude Include="src\Material\Metal.h" />
     <ClInclude Include="src\Model\Box.h" />
+    <ClInclude Include="src\Model\ConstantMedium.h" />
     <ClInclude Include="src\Model\HittableList.h" />
     <ClInclude Include="src\Model\RotationY.h" />
     <ClInclude Include="src\Model\Sphere.h" />
