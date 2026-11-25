@@ -133,7 +133,7 @@ static void Studio(RayTracer& rt, float aspect, const std::filesystem::path& ear
     rt.SetWorld(make_shared<BvhNode>(world));
 }
 
-// The Next Week finale: two nested BVHs, motion, surfaces and media in one scene.
+// Ground boxes and clustered spheres each have their own BVH.
 static void FinalScene(RayTracer& rt, float aspect, const std::filesystem::path& earthMap)
 {
     SetView(rt, aspect, {478,278,-600}, {278,278,0}, 40);
