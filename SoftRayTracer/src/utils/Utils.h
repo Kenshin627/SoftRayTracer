@@ -1,13 +1,20 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <random>
+#include <cstdint>
 
 class Tool
 {
 public:
+	static std::mt19937& Generator()
+	{
+		static thread_local std::mt19937 engine(1);
+		return engine;
+	}
+
 	static float Random()
 	{
-		return rand() / (RAND_MAX + 1.0);
+		return (Generator()() >> 8) * (1.0f / 16777216.0f);
 	}
 
 	static float Random(float min, float max)
@@ -25,7 +32,8 @@ public:
 		while (true)
 		{
 			glm::vec3 d = RandomVector(-1.0f, 1.0f);
-			if (glm::length(d) <= 1)
+			float squared = glm::dot(d, d);
+			if (squared > 1e-20f && squared <= 1)
 			{
 				return glm::normalize(d);
 			}
@@ -52,26 +60,14 @@ public:
 		return glm::normalize(outPerp + parallel);
 	}
 
-	static glm::vec3 RandomInUnitCircle()
-	{
-		while (true)
-		{
-			glm::vec3 v = { Random(-1.0f, 1.0f), Random(-1.0f, 1.0f), 0 };
-			if (glm::length(v) <= 1)
-			{
-				return glm::normalize(v);
-			}
-		}
-	}
-
-	static glm::vec3 RandomInUnitDesk()
+	static glm::vec3 RandomInUnitDisk()
 	{
 		while (true)
 		{
 			glm::vec3 v = { Random(-1.0f, 1.0f), Random(-1.0f, 1.0f), 0.0f };
 			if (glm::length(v) <= 1)
 			{
-				return glm::normalize(v);
+				return v;
 			}
 		}
 	}

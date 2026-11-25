@@ -29,14 +29,17 @@ BoundingBox BoundingBox::SurroundingBox(const BoundingBox& box1, const BoundingB
 bool BoundingBox::Hit(const Ray& r, float minTime, float maxTime)
 {
 	for (int a = 0; a < 3; a++) {
-		auto t0 = fmin((min[a] - r.Origin()[a]) / r.Direction()[a],
-			(max[a] - r.Origin()[a]) / r.Direction()[a]);
-		auto t1 = fmax((min[a] - r.Origin()[a]) / r.Direction()[a],
-			(max[a] - r.Origin()[a]) / r.Direction()[a]);
-		minTime = fmax(t0, minTime);
-		maxTime = fmin(t1, maxTime);
-		if (maxTime < minTime)
-		return false;
+        float direction = r.Direction()[a];
+        if (direction == 0) {
+            if (r.Origin()[a] < min[a] || r.Origin()[a] > max[a]) return false;
+            continue;
+        }
+        float near = (min[a] - r.Origin()[a]) / direction;
+        float far = (max[a] - r.Origin()[a]) / direction;
+        if (near > far) std::swap(near, far);
+        minTime = std::max(minTime, near);
+        maxTime = std::min(maxTime, far);
+        if (maxTime < minTime) return false;
 	}
 	return true;
 }

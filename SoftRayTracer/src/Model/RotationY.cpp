@@ -39,7 +39,7 @@ bool RotationY::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
     direction[0] = cosTheta * ray.Direction()[0] - sinTheta * ray.Direction()[2];
     direction[2] = sinTheta * ray.Direction()[0] + cosTheta * ray.Direction()[2];
 
-    Ray rotated_r(origin, direction);
+    Ray rotated_r(origin, direction, ray.Time());
 
     if (!target->Hit(rotated_r, tMin, tMax, rec))
         return false;
@@ -54,7 +54,7 @@ bool RotationY::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
     normal[2] = -sinTheta * rec.normal[0] + cosTheta * rec.normal[2];
 
     rec.point = p;
-    rec.SetNormal(rotated_r, normal);
+    rec.normal = normal;
 
     return true;
 }

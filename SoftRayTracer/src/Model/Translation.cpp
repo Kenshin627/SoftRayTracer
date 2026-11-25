@@ -4,11 +4,10 @@ Translation::Translation(const std::shared_ptr<Hittable>& target, const glm::vec
 
 bool Translation::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 {
-	Ray offsetRay = Ray(ray.Origin() - offset, ray.Direction());
+	Ray offsetRay = Ray(ray.Origin() - offset, ray.Direction(), ray.Time());
 	if (target->Hit(offsetRay, tMin, tMax, rec))
 	{
 		rec.point = rec.point + offset;
-		rec.SetNormal(offsetRay, rec.normal);
 		return true;
 	}
 	return false;

@@ -69,18 +69,21 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <SdlArch Condition="'$(Platform)'=='Win32'">x86</SdlArch>
+    <SdlArch Condition="'$(Platform)'=='x64'">x64</SdlArch>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(ProjectDir)vendor\sdl2\include;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)vendor\sdl2\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)vendor\sdl2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(ProjectDir)vendor\sdl2\include;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)vendor\sdl2\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)vendor\sdl2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
@@ -96,65 +99,98 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOFTRAY_SDL;SDL_MAIN_HANDLED;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)assets" mkdir "$(OutDir)assets"
+copy /Y "$(ProjectDir)assets\earthmap.jpg" "$(OutDir)assets\earthmap.jpg"
+copy /Y "$(ProjectDir)vendor\sdl2\lib\$(SdlArch)\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOFTRAY_SDL;SDL_MAIN_HANDLED;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)assets" mkdir "$(OutDir)assets"
+copy /Y "$(ProjectDir)assets\earthmap.jpg" "$(OutDir)assets\earthmap.jpg"
+copy /Y "$(ProjectDir)vendor\sdl2\lib\$(SdlArch)\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOFTRAY_SDL;SDL_MAIN_HANDLED;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)assets" mkdir "$(OutDir)assets"
+copy /Y "$(ProjectDir)assets\earthmap.jpg" "$(OutDir)assets\earthmap.jpg"
+copy /Y "$(ProjectDir)vendor\sdl2\lib\$(SdlArch)\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOFTRAY_SDL;SDL_MAIN_HANDLED;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)assets" mkdir "$(OutDir)assets"
+copy /Y "$(ProjectDir)assets\earthmap.jpg" "$(OutDir)assets\earthmap.jpg"
+copy /Y "$(ProjectDir)vendor\sdl2\lib\$(SdlArch)\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scenes.cpp" />
+    <ClCompile Include="src\Model\Quad.cpp" />
+    <ClCompile Include="src\Material\Texture.cpp" />
+    <ClCompile Include="src\Renderer\ImageOutput.cpp" />
+    <ClCompile Include="vendor\stbimage\stb_image.cpp" />
     <ClCompile Include="src\BVH\BvhNode.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -179,6 +215,11 @@
     <ClCompile Include="src\window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scenes.h" />
+    <ClInclude Include="src\Model\Quad.h" />
+    <ClInclude Include="src\Material\Texture.h" />
+    <ClInclude Include="src\Renderer\Sampling.h" />
+    <ClInclude Include="src\Renderer\ImageOutput.h" />
     <ClInclude Include="src\BVH\BvhNode.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Material\Dielectric.h" />

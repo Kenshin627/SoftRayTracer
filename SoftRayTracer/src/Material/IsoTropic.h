@@ -1,12 +1,16 @@
 #pragma once
 #include "Material.h"
+#include "Texture.h"
 #include "../Model/Hittable.h"
 
 class IsoTropic :public Material 
 {
 public:
 	IsoTropic(const glm::vec3& color);
+	explicit IsoTropic(std::shared_ptr<Texture> texture) : albedo(texture) {}
 	virtual bool Scatter(const Ray& in, const HitRecord& rec, glm::vec3& attenuation, Ray& scatter) override;
+bool HasScatteringPdf() const override { return true; }
+	float ScatteringPdf(const HitRecord& rec, const Ray& ray) const override;
 private:
-	glm::vec3 albedo;
+	std::shared_ptr<Texture> albedo;
 };

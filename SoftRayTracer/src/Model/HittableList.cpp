@@ -39,5 +39,5 @@ bool HittableList::GetBoundingBox(BoundingBox& out)
 		}
 		firstObject = false;
 	}
-	return true;
+	return !firstObject;
 }

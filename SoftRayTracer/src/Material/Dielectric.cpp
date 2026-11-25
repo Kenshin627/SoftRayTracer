@@ -4,7 +4,7 @@ bool Dielectric::Scatter(const Ray& in, const HitRecord& rec, glm::vec3& attenua
 {
 	attenuation = { 1.0f, 1.0f ,1.0f };
 	float refractionRatio = rec.frontFace ? 1.0f / ior : ior / 1.0f;
-	float cosTheta = glm::dot(-in.Direction(), rec.normal);
+	float cosTheta = glm::clamp(glm::dot(-in.Direction(), rec.normal), 0.0f, 1.0f);
 	float sinTheta = glm::sqrt(1.0f - cosTheta * cosTheta);
 	bool canNotRefract = refractionRatio * sinTheta > 1.0f;
 	glm::vec3 scatterDir;
@@ -16,7 +16,7 @@ bool Dielectric::Scatter(const Ray& in, const HitRecord& rec, glm::vec3& attenua
 	{
 		scatterDir = Tool::Reflact(in.Direction(), rec.normal, refractionRatio);
 	}
-	scatter = Ray(rec.point, scatterDir);
+	scatter = Ray(rec.point, scatterDir, in.Time());
 	return true;
 }
 

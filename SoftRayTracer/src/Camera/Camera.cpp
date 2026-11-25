@@ -16,7 +16,7 @@ Camera::Camera(const glm::vec3& eye, const glm::vec3& center, const glm::vec3& u
 
 Ray Camera::EmitRay(float u, float v)
 {
-	glm::vec3 offset = apertureRadius * Tool::RandomInUnitDesk();
+	glm::vec3 offset = apertureRadius > 0 ? apertureRadius * Tool::RandomInUnitDisk() : glm::vec3(0);
 	glm::vec3 originPos = position + offset.x * x + offset.y * y;
-	return Ray(originPos, viewportOrigin + u * horizontal + v * vertical - originPos);
+	return Ray(originPos, viewportOrigin + u * horizontal + v * vertical - originPos, Tool::Random());
 }
