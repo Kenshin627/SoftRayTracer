@@ -1,29 +1,28 @@
 #pragma once
 #include "../Camera/Camera.h"
 #include "../Model/HittableList.h"
-#include "../window/Window.h"
+#include "Sampling.h"
 #include <cstdint>
 #include <vector>
 
-class RayTracer
-{
+class RayTracer {
 public:
-	RayTracer(uint32_t width, uint32_t height, uint32_t depth, uint32_t samplerPerPixel, Window* context);
-	void SetCamera(std::shared_ptr<Camera> c) { camera = c; }
-	void SetWorld(const std::shared_ptr<Hittable>& obj);
-	void Draw();
-	glm::vec3 RayColor(const Ray& ray, uint32_t depth);
-	void DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color);
-	const glm::vec3& BackGround() const ;
-	void SetBackGround(const glm::vec3& background);
-	void GammaCorrect(glm::vec3& color);
+    RayTracer(int width, int height, int depth, int samples, uint32_t seed);
+    void SetCamera(std::shared_ptr<Camera> c) { camera = c; }
+    void SetWorld(std::shared_ptr<Hittable> obj) { world = obj; }
+    void SetBackGround(glm::vec3 color) { background = color; }
+    void SetSkyGradient(bool enabled) { skyGradient = enabled; }
+    void AddTarget(std::shared_ptr<DirectionTarget> target) { targets.Add(target); }
+    void SetImportanceSampling(bool enabled) { importanceSampling = enabled; }
+    std::vector<uint8_t> Render() const;
+    glm::vec3 RayColor(const Ray& ray, int remaining) const;
 private:
-	std::shared_ptr<Camera> camera = nullptr;
-	std::shared_ptr<Hittable> world = nullptr;
-	uint32_t width;
-	uint32_t height;
-	uint32_t depth;
-	uint32_t samplerPerPixel;
-	Window* drawHandle;
-	glm::vec3 background = { 0.0f, 0.0f, 0.0f };
+    std::shared_ptr<Camera> camera;
+    std::shared_ptr<Hittable> world;
+    SamplingTargets targets;
+    int width, height, depth, samples;
+    uint32_t seed;
+    glm::vec3 background{0};
+    bool skyGradient = false;
+    bool importanceSampling = true;
 };

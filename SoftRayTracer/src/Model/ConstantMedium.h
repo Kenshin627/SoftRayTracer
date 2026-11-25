@@ -1,10 +1,13 @@
 #pragma once
 #include "Hittable.h"
 
+class Texture;
+
 class ConstantMedium :public Hittable
 {
 public:
 	ConstantMedium(std::shared_ptr<Hittable> target, float density, const glm::vec3& color);
+	ConstantMedium(std::shared_ptr<Hittable> target, float density, std::shared_ptr<Texture> texture);
 	virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec) override;
 	virtual bool GetBoundingBox(BoundingBox& out) override;
 private:

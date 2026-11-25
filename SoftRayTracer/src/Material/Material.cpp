@@ -3,7 +3,7 @@
 
 Material::Material() {}
 
-glm::vec3 Material::Emitter(float u, float v, const glm::vec3& p)
+glm::vec3 Material::Emitter(const HitRecord&)
 {
 	return glm::vec3(0, 0, 0);
 }

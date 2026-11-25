@@ -2,8 +2,15 @@
 #include "../Material/IsoTropic.h"
 #include "../utils/Utils.h"
 #include <memory>
+#include <stdexcept>
 
-ConstantMedium::ConstantMedium(std::shared_ptr<Hittable> target, float density, const glm::vec3& color) :boundary(target), parseFunction(std::make_shared<IsoTropic>(color)), negInvDensity(-1.0f / density) { }
+ConstantMedium::ConstantMedium(std::shared_ptr<Hittable> target, float density, const glm::vec3& color) : ConstantMedium(target, density, std::make_shared<SolidColor>(color)) {}
+
+ConstantMedium::ConstantMedium(std::shared_ptr<Hittable> target, float density, std::shared_ptr<Texture> texture)
+    : boundary(target), parseFunction(std::make_shared<IsoTropic>(texture)), negInvDensity(-1.0f / density)
+{
+    if (density <= 0) throw std::invalid_argument("medium density must be positive");
+}
 
 bool ConstantMedium::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 {
@@ -39,6 +46,7 @@ bool ConstantMedium::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 	rec.point = ray.At(rec.t);
 	rec.normal = glm::vec3(1.0f, 0.0f, 0.0f); 
 	rec.frontFace = true;
+	rec.uv = glm::vec2(0);
 	rec.material = parseFunction;
 
 	return true;

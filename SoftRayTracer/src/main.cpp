@@ -1,118 +1,72 @@
+#include "Scenes.h"
+#include "Renderer/ImageOutput.h"
+#ifdef SOFTRAY_SDL
 #include "window/Window.h"
-#include "Renderer/RayTracer.h"
-#include "Model/Sphere.h"
-#include "Material/Lambertian.h"
-#include "Material/Metal.h"
-#include "Material/Dielectric.h"
-#include "Material/DiffuseLight.h"
-#include "utils/Utils.h"
-#include "BVH/BvhNode.h"
-#include "Model/XYPlane.h"
-#include "Model/YZPlane.h"
-#include "Model/XZPlane.h"
-#include "Model/Translation.h"
-#include "Model/RotationY.h"
-#include "Model/Box.h"
-#include "Model/ConstantMedium.h"
+#endif
+#include <charconv>
+#include <iostream>
+#include <stdexcept>
 
-constexpr uint32_t height = 600;
-constexpr float aspect = 1.0f;
-constexpr uint32_t width = aspect * height;
-constexpr uint32_t depth = 50;
-constexpr uint32_t samplerPerPixel = 50;
-
-std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt);
-std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt);
+static int Number(const std::string& value, int min, int max)
+{
+    int result;
+    auto end = value.data() + value.size();
+    auto parsed = std::from_chars(value.data(), end, result);
+    if (parsed.ec != std::errc() || parsed.ptr != end || result < min || result > max)
+        throw std::invalid_argument("number outside supported range: " + value);
+    return result;
+}
 
 int main(int argc, char** argv)
-{	
-	Window window{ "SoftRenderer", width, height };
-	std::shared_ptr<RayTracer> rt = std::make_shared<RayTracer>(width, height, depth, samplerPerPixel, &window);
-    std::shared_ptr<Hittable> world = CornellBox(rt);	
-	window.SetRayTracer(rt);
-	window.Run();
-	return 0;
-}
-
-std::shared_ptr<Hittable> RandomScene(std::shared_ptr<RayTracer> rt)
 {
-    std::shared_ptr<Camera> cam = std::make_shared<Camera>(glm::vec3(13, 2, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), aspect, 20.0f, 0.1f, 10.0f);
-    rt->SetCamera(cam);
-    rt->SetBackGround({ 1.0f, 1.0f, 1.0f });
-    HittableList world;
-    auto ground_material = std::make_shared<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f));
-    world.AddObject(std::make_shared<Sphere>(glm::vec3(0, -1000, 0), 1000, ground_material));
-    for (int a = -11; a < 11; a++) {
-        for (int b = -11; b < 11; b++) {
-            auto choose_mat = Tool::Random(0.0f, 1.0f);
-            glm::vec3 center(a + 0.9 * Tool::Random(0.0f, 1.0f), 0.2, b + 0.9 * Tool::Random(0.0f, 1.0f));
-
-            if ((center - glm::vec3(4, 0.2, 0)).length() > 0.9) {
-                std::shared_ptr<Material> sphere_material;
-
-                if (choose_mat < 0.8) {
-                    // diffuse
-                    auto albedo = Tool::RandomVector(0.0f, 1.0f) * Tool::RandomVector(0.0f, 1.0f);
-                    sphere_material = std::make_shared<Lambertian>(albedo);
-                    world.AddObject(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else if (choose_mat < 0.95) {
-                    // metal                    
-                    glm::vec3 albedo = Tool::RandomVector(0.5f, 1.0f);
-                    auto fuzz = Tool::Random(0.0f, 0.5f);
-                    sphere_material = std::make_shared<Metal>(albedo, fuzz);
-                    world.AddObject(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else {
-                    // glass
-                    sphere_material = std::make_shared<Dielectric>(1.5);
-                    world.AddObject(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
+    try {
+        int width = 600, height = 600, samples = 50, depth = 50, seed = 1;
+        bool importance = true;
+        std::string scene = "smoke";
+        std::filesystem::path output;
+        auto earth = std::filesystem::absolute(argv[0]).parent_path() / "assets" / "earthmap.jpg";
+        for (int i = 1; i < argc; ++i) {
+            std::string option = argv[i];
+            if (option == "--help") {
+                std::cout << "SoftRayTracer [--scene random|textures|motion|quads|smoke|cornell|final]\n"
+                             "  [--width N] [--height N] [--spp N] [--depth N] [--seed N]\n"
+                             "  [--sampling mixture|material] [--earth FILE] [--output FILE.png|FILE.ppm]\n";
+                return 0;
             }
+            if (++i == argc) throw std::invalid_argument("missing value for " + option);
+            std::string value = argv[i];
+            if (option == "--scene") scene = value;
+            else if (option == "--output") output = value;
+            else if (option == "--earth") earth = value;
+            else if (option == "--width") width = Number(value, 1, 16384);
+            else if (option == "--height") height = Number(value, 1, 16384);
+            else if (option == "--spp") samples = Number(value, 1, 1000000);
+            else if (option == "--depth") depth = Number(value, 1, 256);
+            else if (option == "--seed") seed = Number(value, 0, 2147483647);
+            else if (option == "--sampling" && (value == "material" || value == "mixture"))
+                importance = value == "mixture";
+            else throw std::invalid_argument("unknown option or value: " + option + " " + value);
         }
+
+        Tool::Generator().seed(seed);
+        auto rt = std::make_shared<RayTracer>(width, height, depth, samples, seed);
+        BuildScene(*rt, scene, float(width)/height, earth);
+        rt->SetImportanceSampling(importance);
+#ifdef SOFTRAY_SDL
+        if (output.empty()) {
+            Window window("SoftRayTracer", width, height);
+            window.SetRayTracer(rt);
+            window.Run();
+            return 0;
+        }
+#else
+        if (output.empty()) output = "render.png";
+#endif
+        WriteImage(output, width, height, rt->Render());
+        std::cout << scene << " " << width << "x" << height << " " << samples << " spp -> " << output << "\n";
+        return 0;
+    } catch (const std::exception& e) {
+        std::cerr << "SoftRayTracer: " << e.what() << "\n";
+        return 1;
     }
-
-    auto material1 = std::make_shared<Dielectric>(1.5);
-    world.AddObject(std::make_shared<Sphere>(glm::vec3(0, 1, 0), 1.0, material1));
-
-    auto material2 = std::make_shared<Lambertian>(glm::vec3(0.4, 0.2, 0.1));
-    world.AddObject(std::make_shared<Sphere>(glm::vec3(-4, 1, 0), 1.0, material2));
-
-    auto material3 = std::make_shared<Metal>(glm::vec3(0.7, 0.6, 0.5), 0.0);
-    world.AddObject(std::make_shared<Sphere>(glm::vec3(4, 1, 0), 1.0, material3));
-    auto bvhNode = std::make_shared<BvhNode>(world);
-    rt->SetWorld(bvhNode);
-    return bvhNode;
-}
-
-std::shared_ptr<Hittable> CornellBox(std::shared_ptr<RayTracer> rt)
-{
-    std::shared_ptr<Camera> cam = std::make_shared<Camera>(glm::vec3(278, 278, -800), glm::vec3(278, 278, 0), glm::vec3(0, 1, 0), aspect, 40.0f, 0.0f, 10.0f);
-    rt->SetCamera(cam);
-    rt->SetBackGround({ 0.0f, 0.0f, 0.0f });
-    HittableList world;
-    auto red = std::make_shared<Lambertian>(glm::vec3(1.0, .05, .05));
-    auto white = std::make_shared<Lambertian>(glm::vec3(.73, .73, .73));
-    auto green = std::make_shared<Lambertian>(glm::vec3(.12, 1.0, .15));
-    auto light = std::make_shared<DiffuseLight>(glm::vec3(15.0f, 15.0f, 15.0f));
-
-    world.AddObject(std::make_shared<YZPlane>(0, 555, 0, 555, 555, green));
-    world.AddObject(std::make_shared<YZPlane>(0, 555, 0, 555, 0, red));
-    world.AddObject(std::make_shared<XZPlane>(213, 343, 227, 332, 554, light));
-    world.AddObject(std::make_shared<XZPlane>(0, 555, 0, 555, 555, white));
-    world.AddObject(std::make_shared<XZPlane>(0, 555, 0, 555, 0, white));
-    world.AddObject(std::make_shared<XYPlane>(0, 555, 0, 555, 555, white));
-
-    std::shared_ptr<Hittable> box1 = std::make_shared<Box>(glm::vec3(82.5f, 165.0f, 82.5f), 165, 330, 165, white);
-    box1 = std::make_shared<RotationY>(box1, 15);
-    box1 = std::make_shared<Translation>(box1, glm::vec3(265, 0, 295));
-    world.AddObject(std::make_shared<ConstantMedium>(box1, 0.01f, glm::vec3(0.0f, 0.0f, 0.0f)));
-
-    std::shared_ptr<Hittable> box2 = std::make_shared<Box>(glm::vec3(82.5f, 82.5f, 82.5f), 165, 165, 165, white);
-    box2 = std::make_shared<RotationY>(box2, -18);
-    box2 = std::make_shared<Translation>(box2, glm::vec3(130, 0, 65));
-    world.AddObject(std::make_shared<ConstantMedium>(box2, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f)));
-    auto bvhNode = std::make_shared<BvhNode>(world);
-    rt->SetWorld(bvhNode);
-    return bvhNode;
 }

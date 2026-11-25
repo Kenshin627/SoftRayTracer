@@ -7,6 +7,6 @@ bool Metal::Scatter(const Ray& in, const HitRecord& rec, glm::vec3& attenuation,
 {
 	attenuation = albedo;
 	glm::vec3 reflectDir = Tool::Reflect(in.Direction(), rec.normal);
-	scatter = Ray(rec.point, reflectDir + roughness * Tool::RandomInUnitSphere());
-	return true;
+	scatter = Ray(rec.point, reflectDir + roughness * Tool::RandomInUnitSphere(), in.Time());
+	return glm::dot(scatter.Direction(), rec.normal) > 0;
 }

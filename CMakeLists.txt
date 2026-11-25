@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 3.16)
+project(SoftRayTracer LANGUAGES CXX)
+option(SOFTRAY_SDL "Build the SDL2 window preview" ${WIN32})
+
+set(app "${CMAKE_CURRENT_SOURCE_DIR}/SoftRayTracer")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${app}/src/*.cpp")
+list(REMOVE_ITEM sources "${app}/src/window/Window.cpp" "${app}/src/main.cpp")
+add_library(softray_core STATIC ${sources} "${app}/vendor/stbimage/stb_image.cpp")
+target_include_directories(softray_core PUBLIC "${app}/vendor" "${app}/src")
+target_compile_features(softray_core PUBLIC cxx_std_17)
+add_executable(SoftRayTracer "${app}/src/main.cpp")
+target_link_libraries(SoftRayTracer PRIVATE softray_core)
+find_package(OpenMP QUIET)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(softray_core PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
+if(SOFTRAY_SDL)
+    target_sources(SoftRayTracer PRIVATE "${app}/src/window/Window.cpp")
+    target_compile_definitions(SoftRayTracer PRIVATE SOFTRAY_SDL SDL_MAIN_HANDLED)
+    if(WIN32)
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(arch x64)
+        else()
+            set(arch x86)
+        endif()
+        set(sdl "${app}/vendor/sdl2")
+        target_include_directories(SoftRayTracer PRIVATE "${sdl}/include")
+        target_link_libraries(SoftRayTracer PRIVATE "${sdl}/lib/${arch}/SDL2.lib")
+        add_custom_command(TARGET SoftRayTracer POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${sdl}/lib/${arch}/SDL2.dll" "$<TARGET_FILE_DIR:SoftRayTracer>")
+    else()
+        find_package(SDL2 CONFIG REQUIRED)
+        target_link_libraries(SoftRayTracer PRIVATE SDL2::SDL2)
+    endif()
+endif()
+
+add_custom_command(TARGET SoftRayTracer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:SoftRayTracer>/assets"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${app}/assets/earthmap.jpg"
+        "$<TARGET_FILE_DIR:SoftRayTracer>/assets/earthmap.jpg")
+
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(softray_checks tests/render_checks.cpp)
+    target_link_libraries(softray_checks PRIVATE softray_core)
+    add_test(NAME geometry_and_sampling COMMAND softray_checks)
+    foreach(scene random textures motion quads cornell smoke final)
+        add_test(NAME render_${scene} COMMAND SoftRayTracer --scene ${scene}
+            --width 32 --height 20 --spp 5 --depth 8 --output "${CMAKE_CURRENT_BINARY_DIR}/test-${scene}.png")
+    endforeach()
+endif()

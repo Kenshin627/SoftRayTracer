@@ -1,6 +1,7 @@
 #include "BvhNode.h"
 #include "../utils/Utils.h"
-#include <iostream>
+#include <algorithm>
+#include <stdexcept>
 
 static bool Compare(const std::shared_ptr<Hittable>& a, const std::shared_ptr<Hittable>& b, int axis)
 {
@@ -34,6 +35,7 @@ BvhNode::BvhNode(const std::vector<std::shared_ptr<Hittable>>& objects, uint32_t
 {
 	auto objs = objects;
 	uint32_t span = end - start;
+	if (span == 0) throw std::invalid_argument("BVH requires at least one object");
 	int axis = Tool::RandomInt(0, 2);
 	auto comparator = axis == 0 ? CompareX :
 					  axis == 1 ? CompareY :
@@ -66,8 +68,7 @@ BvhNode::BvhNode(const std::vector<std::shared_ptr<Hittable>>& objects, uint32_t
 	BoundingBox rightBbox;
 	if (!left->GetBoundingBox(leftBbox) || !right->GetBoundingBox(rightBbox))
 	{
-		std::cout << "boundingbox error" << std::endl;
-		return;
+		throw std::invalid_argument("BVH object has no bounds");
 	}
 	aabb = BoundingBox::SurroundingBox(leftBbox, rightBbox);
 }
@@ -79,6 +80,7 @@ bool BvhNode::Hit(const Ray& ray, float tMin, float tMax, HitRecord& rec)
 		return false;
 	}
 	bool leftHit = left->Hit(ray, tMin, tMax, rec);
+	if (left == right) return leftHit;
 	bool rightHit = right->Hit(ray, tMin, leftHit ? rec.t : tMax, rec);
 	return leftHit || rightHit;
 }

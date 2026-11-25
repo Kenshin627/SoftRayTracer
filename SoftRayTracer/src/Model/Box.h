@@ -1,7 +1,4 @@
 #pragma once
-#include "XYPlane.h"
-#include "XZPlane.h"
-#include "YZPlane.h"
 #include "HittableList.h"
 
 class Box :public Hittable

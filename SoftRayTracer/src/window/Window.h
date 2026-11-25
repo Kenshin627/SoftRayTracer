@@ -1,24 +1,17 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <SDL.h>
 #include <memory>
+#include <SDL.h>
 
 class RayTracer;
-class Window
-{
+class Window {
 public:
-	Window(const char* title, uint32_t width, uint32_t height);
-	void SetRayTracer(const std::shared_ptr<RayTracer>& rt) { rayTracer = rt; }
-	~Window();
-	void Destroy();
-	void Run();
-	void DrawPoint(uint32_t x, uint32_t y, const glm::vec3& color);
-	void Clear();
+    Window(const char* title, int width, int height);
+    ~Window();
+    void SetRayTracer(std::shared_ptr<RayTracer> rt) { rayTracer = rt; }
+    void Run();
 private:
-	SDL_Window* winHandle = nullptr;
-	SDL_Renderer* drawHandle = nullptr;
-	bool shounldClosed = false;
-	glm::vec3 clearColor { 51, 51, 51 };
-	std::shared_ptr<RayTracer> rayTracer;
-	glm::mat3 transform;
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    int width, height;
+    std::shared_ptr<RayTracer> rayTracer;
 };
