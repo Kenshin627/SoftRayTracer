@@ -1,18 +1,18 @@
 # SoftRayTracer
 
-用 C++17 在 CPU 上做蒙特卡洛路径追踪。下图是第二册的综合场景：画面中的蓝色球体包含参与散射的介质，右上角的白色球簇由 1,000 个球体组成。渲染器通过 BVH 查找交点，并对顶灯采样来估计入射光。
+SoftRayTracer 是用 C++17 实现的 CPU 路径追踪器。下图中，蓝色球体内的介质会散射光线，右上角的球簇由 1,000 个白球组成。渲染器用包围体层次结构（BVH）加速求交，并对顶灯采样来估计入射光。
 
 ![综合场景中的地球纹理、玻璃、蓝色介质球、运动球与球簇](docs/renders/final.png)
 
-## 与三册教程的对照
+## 渲染特性
 
-对照版本为 **v4.0.2**，原仓库基线为 [`c84349d`](https://github.com/Kenshin627/SoftRayTracer/tree/c84349d)。下表按最终渲染器使用的功能整理。书中用于推导公式的独立数学练习不计入场景列表。[系列主页](https://raytracing.github.io/)
-
-| 教程 | 基线已有 | 本次补齐或修正 | 验证场景 |
-| --- | --- | --- | --- |
-| [第一册 · In One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) | 球体求交、递归反弹、漫反射、模糊金属、玻璃折射与全反射、Schlick 近似、抖动抗锯齿、Gamma 2、可调相机和景深 | 修正光圈采样，让样本均匀覆盖圆盘；修正随机球放置时的距离判断，启用渐变天空，支持 PPM 输出 | `random` |
-| [第二册 · The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html) | AABB/BVH、轴对齐矩形、长方体、平移与 Y 轴旋转、面光源、恒定密度介质 | 加入运动球与快门时间、球面和四边形 UV、棋盘格、图像纹理、Perlin 湍流大理石、任意朝向平行四边形、纹理发光与纹理介质。修正长方体深度、实例内外表面判定及 BVH 叶节点重复采样介质的问题 | `textures`、`motion`、`quads`、`smoke`、`final` |
-| [第三册 · The Rest of Your Life](https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html) | 按材质生成散射方向 | 加入像素分层采样、局部正交基、余弦半球与均匀球面 PDF、四边形面积到立体角的换算、球体可见锥采样，以及材质和多个几何目标的混合 PDF。发光面支持单面出光，玻璃与金属走各自的反射／折射路径 | `cornell`，可切换两种采样模式 |
+| 模块 | 实现 | 示例场景 |
+| --- | --- | --- |
+| 相机 | 透视投影、可调视场、薄透镜景深和快门时间采样。运动球在每条光路对应的曝光时刻参与求交。 | `random`、`motion` |
+| 几何与加速 | 球体、任意朝向的平行四边形、长方体、平移与 Y 轴旋转。BVH 同时支持静态物体和运动球的包围盒。 | `quads`、`final` |
+| 表面与纹理 | 漫反射、粗糙金属、玻璃折射与全反射、单面发光。球面和四边形支持 UV 映射，也可按三维位置生成棋盘格和 Perlin 大理石纹理。 | `random`、`textures`、`cornell` |
+| 参与介质 | 在物体边界内按指数分布采样自由程，以各向同性散射模拟恒定密度的烟雾。 | `smoke`、`final` |
+| 积分与采样 | 像素分层采样、递归路径积分、余弦半球与均匀球面采样。可将材质采样与面光源、球体的方向采样混合，降低间接照明中的噪声。 | `cornell`、`final` |
 
 ## 构建并渲染第一张图
 
@@ -82,4 +82,4 @@ ctest --test-dir build -C Release --output-on-failure
 
 测试包含七个场景的命令行渲染，以及运动包围盒、球面与四边形 UV、采样方向与密度、单面出光、实例法线、反弹时间、光圈分布和介质消光的回归检查。使用单配置构建时，将上面的 `build` 换成实际构建目录。[测试源码](tests/render_checks.cpp)
 
-地球表面贴图取自教程 v4.0.2。图像读写使用 stb，Perlin 噪声使用仓库内的 GLM 实现。[原始地球贴图](https://github.com/RayTracing/raytracing.github.io/blob/v4.0.2/images/earthmap.jpg) · [stb](https://github.com/nothings/stb) · [GLM](https://github.com/g-truc/glm)
+地球表面使用随项目分发的经纬度贴图。图像读写使用 stb，Perlin 噪声由 GLM 计算。[地球贴图](SoftRayTracer/assets/earthmap.jpg) · [stb](https://github.com/nothings/stb) · [GLM](https://github.com/g-truc/glm)
